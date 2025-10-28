@@ -3,7 +3,7 @@ services:
     image: gogoshine/iopaint:latest
     #image: gogoshine/iopaint:sha-190a61f
     ports:
-      - "30000:30000"
+      - "30001:8080"
     volumes:
       - /etc/localtime:/etc/localtime:ro  # 挂载主机时区
       - /etc/timezone:/etc/timezone:ro    # 挂载时区名称（可选）

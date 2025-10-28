@@ -11,9 +11,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
-
 # 复制后端代码和依赖文件
 COPY . .
+
+RUN cd web_app && npm install && npm run build && cd -
 
 # 安装Python依赖
 RUN pip install --no-cache-dir -r requirements.txt
