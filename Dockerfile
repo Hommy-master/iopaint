@@ -23,10 +23,10 @@ RUN cd web_app && npm install && npm run build && cd - \
     && cp -rf web_app/dist iopaint/web_app \
     && rm -rf web_app/dist
 
-# 构建前端 - 跳过TypeScript检查 -- 尝试正常构建，如果失败则跳过类型检查
+# 构建前端
 RUN cd web_app && \
     npm install && \
-    (npm run build || npm run build -- --force) && \
+    npm run build && \
     cd - && \
     cp -rf web_app/dist iopaint/web_app && \
     rm -rf web_app/dist
