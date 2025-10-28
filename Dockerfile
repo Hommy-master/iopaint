@@ -31,8 +31,8 @@ RUN cd web_app && \
     cp -rf web_app/dist iopaint/web_app && \
     rm -rf web_app/dist
 
-# 安装Python依赖
-RUN pip install --no-cache-dir -r requirements.txt
+# 创建并激活Python虚拟环境
+RUN python -m venv /app/.venv && source /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
 
 # 暴露端口
 EXPOSE 8080
