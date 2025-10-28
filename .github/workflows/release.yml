@@ -13,37 +13,6 @@ jobs:
       - name: 准备代码
         uses: actions/checkout@v4
         
-      # 安装uv环境
-      - name: 安装uv
-        uses: astral-sh/setup-uv@v2
-        with:
-          version: "0.8.11"
-          enable-cache: true
-
-      - name: 准备python环境
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: 安装依赖（含开发工具）
-        run: uv sync --all-extras  # 安装生产+开发依赖
-
-      - name: 查看文件和目录结构
-        run: ls -lha  
-
-      - name: 准备生产环境文件
-        run: |
-          mkdir -p dist
-          # 复制源代码
-          cp -r src dist/
-          # 复制依赖配置文件
-          cp pyproject.toml dist/
-          cp *.py dist/
-          cp uv.lock dist/
-
-      - name: 查看文件和目录结构
-        run: ls -lha  dist -R
-
       - name: 准备打包Docker镜像的环境
         uses: docker/setup-buildx-action@v3
 
@@ -61,7 +30,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/capcut-mate  # 统一使用DOCKERHUB_USERNAME（无下划线）
+            ${{ secrets.DOCKERHUB_USERNAME }}/iopaint  # 统一使用DOCKERHUB_USERNAME（无下划线）
           tags: |
             type=ref,event=branch
             type=ref,event=tag
@@ -73,8 +42,8 @@ jobs:
         run: |
           echo "生成的标签: ${{ steps.meta.outputs.tags }}"
           # 检查标签是否包含正确的用户名格式
-          if [[ ! "${{ steps.meta.outputs.tags }}" == *"${{ secrets.DOCKERHUB_USERNAME }}/capcut-mate:"* ]]; then
-            echo "错误：标签格式不正确，应为 ${secrets.DOCKERHUB_USERNAME}/capcut-mate:标签"
+          if [[ ! "${{ steps.meta.outputs.tags }}" == *"${{ secrets.DOCKERHUB_USERNAME }}/iopaint:"* ]]; then
+            echo "错误：标签格式不正确，应为 ${secrets.DOCKERHUB_USERNAME}/iopaint:标签"
             exit 1
           fi
 
