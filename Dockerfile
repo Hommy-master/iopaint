@@ -1,26 +1,27 @@
-# 第一阶段：构建前端
-FROM node:22-alpine AS frontend-builder
+FROM node:22-bookworm
 
-# 验证 node 和 npm 是否存在
-RUN node --version && npm --version
-
-# 第二阶段：构建后端
-FROM python:3.11-slim
-
-WORKDIR /app
-
-# 安装系统依赖
-RUN apt-get update && apt-get install -y \
+# 一次性安装 Python 3.11 及常用系统工具
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3.11 \
+    python3.11-dev \
+    python3.11-venv \
+    python3-pip \
+    build-essential \
+    curl \
     wget \
     && rm -rf /var/lib/apt/lists/*
 
 # 验证 node 和 npm 是否存在
 RUN node --version && npm --version
 
+WORKDIR /app
+
 # 复制后端代码和依赖文件
 COPY . .
 
-RUN cd web_app && npm install && npm run build && cd -
+RUN cd web_app && npm install && npm run build && cd - \
+    && cp -rf web_app/dist iopaint/web_app \
+    && rm -rf web_app/dist
 
 # 安装Python依赖
 RUN pip install --no-cache-dir -r requirements.txt
