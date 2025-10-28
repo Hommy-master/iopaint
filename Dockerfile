@@ -1,10 +1,10 @@
 FROM node:22-bookworm
 
-# 一次性安装 Python 3.13 及常用系统工具
+# 一次性安装 Python 3.11 及常用系统工具
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3.13 \
-    python3.13-dev \
-    python3.13-venv \
+    python3.11 \
+    python3.11-dev \
+    python3.11-venv \
     python3-pip \
     python-is-python3 \
     build-essential \
