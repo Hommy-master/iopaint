@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.11-dev \
     python3.11-venv \
     python3-pip \
+    python-is-python3 \
     build-essential \
     curl \
     wget \
@@ -19,10 +20,6 @@ WORKDIR /app
 # 复制后端代码和依赖文件
 COPY . .
 
-RUN cd web_app && npm install && npm run build && cd - \
-    && cp -rf web_app/dist iopaint/web_app \
-    && rm -rf web_app/dist
-
 # 构建前端
 RUN cd web_app && \
     npm install && \
@@ -32,7 +29,7 @@ RUN cd web_app && \
     rm -rf web_app/dist
 
 # 创建并激活Python虚拟环境
-RUN python3.11 -m venv /app/.venv && . /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
+RUN python -m venv /app/.venv && . /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
 
 # 暴露端口
 EXPOSE 8080
