@@ -1,6 +1,9 @@
 # 第一阶段：构建前端
 FROM node:22-alpine AS frontend-builder
 
+# 验证 node 和 npm 是否存在
+RUN node --version && npm --version
+
 # 第二阶段：构建后端
 FROM python:3.11-slim
 
@@ -10,6 +13,9 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     wget \
     && rm -rf /var/lib/apt/lists/*
+
+# 验证 node 和 npm 是否存在
+RUN node --version && npm --version
 
 # 复制后端代码和依赖文件
 COPY . .
