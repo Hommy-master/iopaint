@@ -32,7 +32,7 @@ RUN cd web_app && \
     rm -rf web_app/dist
 
 # 创建并激活Python虚拟环境
-RUN python3.11 -m venv /app/.venv && source /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
+RUN python3.11 -m venv /app/.venv && . /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
 
 # 暴露端口
 EXPOSE 8080
