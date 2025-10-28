@@ -1,0 +1,15 @@
+services:
+  iopaint:
+    image: gogoshine/iopaint:latest
+    #image: gogoshine/iopaint:sha-190a61f
+    ports:
+      - "30000:30000"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro  # 挂载主机时区
+      - /etc/timezone:/etc/timezone:ro    # 挂载时区名称（可选）
+    mem_limit: 8G     # 内存限制
+    memswap_limit: 8G # 总内存（物理内存 + Swap）限制
+    cpus: '4'       # CPU使用率限制为150%，即容器最多可以使用1.5个完整的CPU核心
+    oom_score_adj: -500  # 调整 OOM 杀手优先级
+    restart: unless-stopped  # 除非手动停止，否则总是重启容器
+    #entrypoint: ["/bin/sh", "-c", "sleep 10000"]
