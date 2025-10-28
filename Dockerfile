@@ -1,6 +1,6 @@
 FROM node:22-bookworm
 
-# 一次性安装 Python 3.11 及常用系统工具
+# 一次性安装 Python 3.11 及常用系统工具，添加 OpenCV 和图形库依赖
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3.11 \
     python3.11-dev \
@@ -10,6 +10,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     wget \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxrender1 \
+    libxext6 \
+    libglu1-mesa \
     && rm -rf /var/lib/apt/lists/*
 
 # 验证 node 和 npm 是否存在
