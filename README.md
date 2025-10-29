@@ -1,138 +1,203 @@
-<h1 align="center">IOPaint</h1>
-<p align="center">A free and open-source inpainting & outpainting tool powered by SOTA AI model.</p>
+# IOPaint RESTful API 接口文档
 
-<p align="center">
-  <a href="https://github.com/Sanster/IOPaint">
-    <img alt="total download" src="https://pepy.tech/badge/iopaint" />
-  </a>
-  <a href="https://pypi.org/project/iopaint">
-    <img alt="version" src="https://img.shields.io/pypi/v/iopaint" />
-  </a>
-  <a href="">
-    <img alt="python version" src="https://img.shields.io/pypi/pyversions/iopaint" />
-  </a>
-  <a href="https://huggingface.co/spaces/Sanster/iopaint-lama">
-    <img alt="HuggingFace Spaces" src="https://img.shields.io/badge/%F0%9F%A4%97%20HuggingFace-Spaces-blue" />
-  </a>
-  <a href="https://colab.research.google.com/drive/1TKVlDZiE3MIZnAUMpv2t_S4hLr6TUY1d?usp=sharing">
-    <img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" />
-  </a>
-</p>
+当启动 IOPaint 服务时，它会通过 FastAPI 提供一系列 RESTful API 接口，用于图像处理和管理。
 
-|Erase([LaMa](https://www.iopaint.com/models/erase/lama))|Replace Object([PowerPaint](https://www.iopaint.com/models/diffusion/powerpaint))|
-|-----|----|
-|<video src="https://github.com/Sanster/IOPaint/assets/3998421/264bc27c-0abd-4d8b-bb1e-0078ab264c4a">  | <video src="https://github.com/Sanster/IOPaint/assets/3998421/1de5c288-e0e1-4f32-926d-796df0655846">|
-
-|Draw Text([AnyText](https://www.iopaint.com/models/diffusion/anytext))|Out-painting([PowerPaint](https://www.iopaint.com/models/diffusion/powerpaint))|
-|---------|-----------|
-|<video src="https://github.com/Sanster/IOPaint/assets/3998421/ffd4eda4-f7d4-4693-93d8-d2cd5aa7c6d6">|<video src="https://github.com/Sanster/IOPaint/assets/3998421/c4af8aef-8c29-49e0-96eb-0aae2f768da2">|
-
-
-## Features
-
-- Completely free and open-source, fully self-hosted, support CPU & GPU & Apple Silicon
-- [Windows 1-Click Installer](https://www.iopaint.com/install/windows_1click_installer)
-- [OptiClean](https://apps.apple.com/ca/app/opticlean/id6452387177): macOS & iOS App for object erase
-- Supports various AI [models](https://www.iopaint.com/models) to perform erase, inpainting or outpainting task.
-  - [Erase models](https://www.iopaint.com/models#erase-models): These models can be used to remove unwanted object, defect, watermarks, people from image.
-  - Diffusion models: These models can be used to replace objects or perform outpainting. Some popular used models include:
-    - [runwayml/stable-diffusion-inpainting](https://huggingface.co/runwayml/stable-diffusion-inpainting)
-    - [diffusers/stable-diffusion-xl-1.0-inpainting-0.1](https://huggingface.co/diffusers/stable-diffusion-xl-1.0-inpainting-0.1)
-    - [andregn/Realistic_Vision_V3.0-inpainting](https://huggingface.co/andregn/Realistic_Vision_V3.0-inpainting)
-    - [Lykon/dreamshaper-8-inpainting](https://huggingface.co/Lykon/dreamshaper-8-inpainting)
-    - [Sanster/anything-4.0-inpainting](https://huggingface.co/Sanster/anything-4.0-inpainting)
-    - [BrushNet](https://www.iopaint.com/models/diffusion/brushnet)
-    - [PowerPaintV2](https://www.iopaint.com/models/diffusion/powerpaint_v2)
-    - [Sanster/AnyText](https://huggingface.co/Sanster/AnyText)
-    - [Fantasy-Studio/Paint-by-Example](https://huggingface.co/Fantasy-Studio/Paint-by-Example)
-
-- [Plugins](https://www.iopaint.com/plugins):
-  - [Segment Anything](https://iopaint.com/plugins/interactive_seg): Accurate and fast Interactive Object Segmentation
-  - [RemoveBG](https://iopaint.com/plugins/rembg): Remove image background or generate masks for foreground objects
-  - [Anime Segmentation](https://iopaint.com/plugins/anime_seg): Similar to RemoveBG, the model is specifically trained for anime images.
-  - [RealESRGAN](https://iopaint.com/plugins/RealESRGAN): Super Resolution
-  - [GFPGAN](https://iopaint.com/plugins/GFPGAN): Face Restoration
-  - [RestoreFormer](https://iopaint.com/plugins/RestoreFormer): Face Restoration
-- [FileManager](https://iopaint.com/file_manager): Browse your pictures conveniently and save them directly to the output directory.
-
-
-## Quick Start
-
-### Start webui
-
-IOPaint provides a convenient webui for using the latest AI models to edit your images.
-You can install and start IOPaint easily by running following command:
+## 启动服务
 
 ```bash
-# In order to use GPU, install cuda version of pytorch first.
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/cu118
-# AMD GPU users, please utilize the following command, only works on linux, as pytorch is not yet supported on Windows with ROCm.
-# pip3 install torch==2.1.2 torchvision==0.16.2 --index-url https://download.pytorch.org/whl/rocm5.6
-
-pip3 install iopaint
 iopaint start --model=lama --device=cpu --port=8080
 ```
 
-That's it, you can start using IOPaint by visiting http://localhost:8080 in your web browser.
+服务启动后，可以通过 `http://localhost:8080` 访问 API 接口。
 
-All models will be downloaded automatically at startup. If you want to change the download directory, you can add `--model-dir`. More documentation can be found [here](https://www.iopaint.com/install/download_model)
+## API 接口列表
 
-You can see other supported models at [here](https://www.iopaint.com/models) and how to use local sd ckpt/safetensors file at [here](https://www.iopaint.com/models#load-ckptsafetensors).
+### 1. 获取服务器配置信息
 
-### Plugins
+**接口地址**: `GET /api/v1/server-config`
 
-You can specify which plugins to use when starting the service, and you can view the commands to enable plugins by using `iopaint start --help`. 
+**接口说明**: 获取服务器当前的配置信息，包括插件信息、模型信息、设备设置等。
 
-More demonstrations of the Plugin can be seen [here](https://www.iopaint.com/plugins)
+**返回参数**:
+- `plugins`: 插件列表
+  - `name`: 插件名称
+  - `support_gen_image`: 是否支持生成图像
+  - `support_gen_mask`: 是否支持生成遮罩
+- `modelInfos`: 可用模型列表
+  - `name`: 模型名称
+  - `path`: 模型路径
+  - `model_type`: 模型类型
+  - `is_single_file_diffusers`: 是否为单文件diffusers模型
+- `removeBGModel`: 当前移除背景模型
+- `removeBGModels`: 可用的移除背景模型列表
+- `realesrganModel`: 当前超分辨率模型
+- `realesrganModels`: 可用的超分辨率模型列表
+- `interactiveSegModel`: 当前交互式分割模型
+- `interactiveSegModels`: 可用的交互式分割模型列表
+- `enableFileManager`: 是否启用文件管理器
+- `enableAutoSaving`: 是否启用自动保存
+- `enableControlnet`: 是否启用ControlNet
+- `controlnetMethod`: ControlNet方法
+- `disableModelSwitch`: 是否禁用模型切换
+- `isDesktop`: 是否为桌面应用
+- `samplers`: 可用的采样器列表
 
-```bash
-iopaint start --enable-interactive-seg --interactive-seg-device=cuda
-```
+### 2. 获取当前模型信息
 
-### Batch processing
+**接口地址**: `GET /api/v1/model`
 
-You can also use IOPaint in the command line to batch process images:
+**接口说明**: 获取当前正在使用的模型信息。
 
-```bash
-iopaint run --model=lama --device=cpu \
---image=/path/to/image_folder \
---mask=/path/to/mask_folder \
---output=output_dir
-```
+**返回参数**:
+- `name`: 模型名称
+- `path`: 模型路径
+- `model_type`: 模型类型
+- `is_single_file_diffusers`: 是否为单文件diffusers模型
 
-`--image` is the folder containing input images, `--mask` is the folder containing corresponding mask images.
-When `--mask` is a path to a mask file, all images will be processed using this mask.
+### 3. 切换模型
 
-You can see more information about the available models and plugins supported by IOPaint below.
+**接口地址**: `POST /api/v1/model`
 
-## Development
+**接口说明**: 切换到指定的模型。
 
-Install [nodejs](https://nodejs.org/en), then install the frontend dependencies.
+**请求参数**:
+- `name`: 要切换到的模型名称
 
-```bash
-git clone https://github.com/Sanster/IOPaint.git
-cd IOPaint/web_app
-npm install
-npm run build
-cp -r dist/ ../iopaint/web_app
-```
+**返回参数**:
+- `name`: 模型名称
+- `path`: 模型路径
+- `model_type`: 模型类型
+- `is_single_file_diffusers`: 是否为单文件diffusers模型
 
-Create a `.env.local` file in `web_app` and fill in the backend IP and port.
-```
-VITE_BACKEND=http://127.0.0.1:8080
-```
+### 4. 获取输入图像
 
-Start front-end development environment
-```bash
-npm run dev
-```
+**接口地址**: `GET /api/v1/inputimage`
 
-Install back-end requirements and start backend service
-```bash
-pip install -r requirements.txt
-python3 main.py start --model lama --port 8080
-```
+**接口说明**: 获取当前输入的图像文件。
 
-Then you can visit `http://localhost:5173/` for development.
-The frontend code will automatically update after being modified,
-but the backend needs to restart the service after modifying the python code.
+### 5. 图像修复处理
+
+**接口地址**: `POST /api/v1/inpaint`
+
+**接口说明**: 对图像进行修复处理。
+
+**请求参数** (InpaintRequest):
+- `image`: base64编码的图像数据
+- `mask`: base64编码的遮罩数据
+- `ldm_steps`: LDM模型的步数，默认为20
+- `ldm_sampler`: LDM模型的采样器，默认为"plms"
+- `zits_wireframe`: 是否为zits模型启用线框，默认为True
+- `hd_strategy`: 高清策略，可选值为"Original"、"Resize"、"Crop"，默认为"Crop"
+- `hd_strategy_crop_trigger_size`: 触发裁剪策略的尺寸阈值，默认为800
+- `hd_strategy_crop_margin`: 裁剪边距，默认为128
+- `hd_strategy_resize_limit`: 调整大小限制，默认为1280
+- `prompt`: 扩散模型提示词
+- `negative_prompt`: 扩散模型负面提示词
+- `use_croper`: 是否在扩散修复前裁剪图像，默认为False
+- `croper_x`: 裁剪起始点x坐标
+- `croper_y`: 裁剪起始点y坐标
+- `croper_height`: 裁剪高度
+- `croper_width`: 裁剪宽度
+- `use_extender`: 是否在SD外绘前扩展图像，默认为False
+- `extender_x`: 扩展起始点x坐标
+- `extender_y`: 扩展起始点y坐标
+- `extender_height`: 扩展高度
+- `extender_width`: 扩展宽度
+- `sd_scale`: SD修复前调整图像大小的比例，范围(0.0, 1.0]，默认为1.0
+- `sd_mask_blur`: 遮罩边缘模糊程度，默认为11
+- `sd_strength`: 添加到基础图像的噪声强度，范围[0.0, 1.0]，默认为1.0
+- `sd_steps`: 去噪步骤数，默认为50
+- `sd_guidance_scale`: 指导比例，默认为7.5
+- `sd_sampler`: 扩散模型采样器，默认为"UniPC"
+- `sd_seed`: 扩散模型种子，默认为42
+- `sd_match_histograms`: 是否匹配直方图，默认为False
+- `sd_outpainting_softness`: 外绘柔和度，默认为20.0
+- `sd_outpainting_space`: 外绘间距，默认为20.0
+- `sd_lcm_lora`: 是否启用LCM-LoRA模式，默认为False
+- `sd_keep_unmasked_area`: 是否保持未遮罩区域不变，默认为True
+- `cv2_flag`: OpenCV修复标志，默认为"INPAINT_NS"
+- `cv2_radius`: OpenCV修复半径，默认为4
+- `paint_by_example_example_image`: Paint by Example模型的示例图像(base64编码)
+- `p2p_image_guidance_scale`: 图像指导比例，默认为1.5
+- `enable_controlnet`: 是否启用ControlNet，默认为False
+- `controlnet_conditioning_scale`: ControlNet条件缩放比例，范围[0.0, 1.0]，默认为0.4
+- `controlnet_method`: ControlNet方法，默认为"lllyasviel/control_v11p_sd15_canny"
+- `enable_brushnet`: 是否启用BrushNet，默认为False
+- `brushnet_method`: BrushNet方法
+- `brushnet_conditioning_scale`: BrushNet条件缩放比例，范围[0.0, 1.0]，默认为1.0
+- `enable_powerpaint_v2`: 是否启用PowerPaint v2，默认为False
+- `powerpaint_task`: PowerPaint任务类型
+- `fitting_degree`: 控制生成对象与遮罩形状拟合程度，范围(0.0, 1.0]，默认为1.0
+
+### 6. 切换插件模型
+
+**接口地址**: `POST /api/v1/switch_plugin_model`
+
+**接口说明**: 切换指定插件的模型。
+
+**请求参数** (SwitchPluginModelRequest):
+- `plugin_name`: 插件名称
+- `model_name`: 要切换到的模型名称
+
+### 7. 运行插件生成遮罩
+
+**接口地址**: `POST /api/v1/run_plugin_gen_mask`
+
+**接口说明**: 使用指定插件生成遮罩。
+
+**请求参数** (RunPluginRequest):
+- `name`: 插件名称
+- `image`: base64编码的图像数据
+- `clicks`: 交互式分割的点击坐标，格式为[[x,y,0/1], [x2,y2,0/1]]
+- `scale`: 超分辨率的缩放比例，默认为2.0
+
+### 8. 运行插件生成图像
+
+**接口地址**: `POST /api/v1/run_plugin_gen_image`
+
+**接口说明**: 使用指定插件生成图像。
+
+**请求参数** (RunPluginRequest):
+- `name`: 插件名称
+- `image`: base64编码的图像数据
+- `clicks`: 交互式分割的点击坐标，格式为[[x,y,0/1], [x2,y2,0/1]]
+- `scale`: 超分辨率的缩放比例，默认为2.0
+
+### 9. 获取采样器列表
+
+**接口地址**: `GET /api/v1/samplers`
+
+**接口说明**: 获取可用的采样器列表。
+
+### 10. 调整遮罩
+
+**接口地址**: `POST /api/v1/adjust_mask`
+
+**接口说明**: 对遮罩进行调整操作。
+
+**请求参数** (AdjustMaskRequest):
+- `mask`: base64编码的遮罩数据
+- `operate`: 操作类型，可选值为"expand"(扩展)、"shrink"(收缩)、"reverse"(反转)
+- `kernel_size`: 扩展遮罩的内核大小，默认为5
+
+### 11. 保存图像
+
+**接口地址**: `POST /api/v1/save_image`
+
+**接口说明**: 将图像保存到输出目录。
+
+**请求参数**:
+- 文件上传形式，包含要保存的图像文件
+
+### 12. 获取图像信息
+
+**接口地址**: `POST /api/v1/gen-info`
+
+**接口说明**: 从图像文件中提取生成信息。
+
+**请求参数**:
+- 文件上传形式，包含要分析的图像文件
+
+**返回参数** (GenInfoResponse):
+- `prompt`: 提示词
+- `negative_prompt`: 负面提示词
