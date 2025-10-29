@@ -37,6 +37,11 @@ RUN cd web_app && \
 # 创建并激活Python虚拟环境
 RUN python -m venv /app/.venv && . /app/.venv/bin/activate && pip install --no-cache-dir -r requirements.txt && deactivate
 
+# 把模型放到 PyTorch 默认缓存目录
+RUN mkdir -p /root/.cache/torch/hub/checkpoints && \
+    wget -O /root/.cache/torch/hub/checkpoints/big-lama.pt \
+        https://github.com/Sanster/models/releases/download/add_big_lama/big-lama.pt
+
 # 暴露端口
 EXPOSE 8080
 
